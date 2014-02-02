@@ -1,76 +1,271 @@
 package com.hackathon.StatusTracker;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+
+import org.json.JSONArray;
+import org.json.JSONException;
+
 import android.app.Activity;
-import android.content.Intent;
+
+
+import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
+
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.LinearLayout.LayoutParams;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 public class NADRA_Activity extends Activity {
-
-
+	
+	public static final String PREFS_NAME = "MyPrefsFile";
+	
+	static boolean CNIC_status=true;
+	
+	
+	
 	LinearLayout myLinearLayout;
-
-	TextView textTitle;
-	Button PendingList_button;
-	Button CompletedList_button;
-
-
-
-@Override
-protected void onCreate(Bundle savedInstanceState) {
-	super.onCreate(savedInstanceState);
-
-	myLinearLayout = new LinearLayout(this);
-	myLinearLayout.setOrientation(LinearLayout.VERTICAL);
-	
-	textTitle = new TextView(this);
-	textTitle.setGravity(Gravity.CENTER_HORIZONTAL);
-	textTitle.setText("NADRA-CNIC Status System");
-	textTitle.setTextSize(20);
+	ScrollView sV;
 	
 	
-	PendingList_button = new Button(this);
-	PendingList_button.setText("Pending List");
-	PendingList_button.setTextSize(20);
-	PendingList_button.setOnClickListener(new Button.OnClickListener() {  
-        public void onClick(View v)
-        {
-    	
-    	Intent myIntent = new Intent(NADRA_Activity.this, NADRAPendingActivity.class);
-    	startActivity(myIntent);
-    	
+	TextView textMessage;
+	TextView []CNIC_Numbers = new TextView[999];
+	public static String []CNIC_Numbers_Strings = new String[999];
+	
+	Button addCNIC;
+	EditText CNIC_Field;
+	
+	int counter=0;
+	float RealCounter=0;
+	
+	ScrollView scrollView;
+
+	
+	
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
 		
-        }
-     });
-	
-	CompletedList_button = new Button(this);
-	CompletedList_button.setText("Completed List");
-	CompletedList_button.setTextSize(20);
-	CompletedList_button.setOnClickListener(new Button.OnClickListener() {  
-        public void onClick(View v)
-        {
-    	
-    	Intent myIntent = new Intent(NADRA_Activity.this, NADRACompletedActivity.class);
-    	startActivity(myIntent);
-    	
 		
-        }
-     });
+		scrollView = new ScrollView(this);
+		
+		
+		
+		LoadArray();
+		LoadInt();
+			
 	
-	
-	myLinearLayout.addView(textTitle);
-	myLinearLayout.addView(PendingList_button);
-	myLinearLayout.addView(CompletedList_button);
-	
-	
-	setContentView(myLinearLayout);
-	
+
+		
+		myLinearLayout = new LinearLayout(this);
+		myLinearLayout.setOrientation(LinearLayout.VERTICAL);
+		
+		scrollView.addView(myLinearLayout);
+		
+		
+		textMessage = new TextView(this);
+		textMessage.setText("CNIC - Completed List");
+		textMessage.setGravity(Gravity.CENTER_HORIZONTAL);
+		textMessage.setTextSize(20);
+		
+		
+		
+		CNIC_Field = new EditText(this);
+		CNIC_Field.setGravity(Gravity.CENTER_HORIZONTAL);
+		CNIC_Field.setHint("Enter CNIC Number to Add to List");
+		
+		for (int i=0 ; i < 999 ; ++i)
+		{
+		CNIC_Numbers[i] = new TextView(this);
+		CNIC_Numbers[i].setGravity(Gravity.CENTER_HORIZONTAL);
+		CNIC_Numbers[i].setTextSize(20);
+		}
+		
 	
 		
-}	
+		
+		
+		
+		addCNIC = new Button(this);
+		addCNIC.setText("Add CNIC");
+		addCNIC.setTextSize(20);
+		addCNIC.setOnClickListener(new Button.OnClickListener() {  
+	        public void onClick(View v)
+	        {	
+	        	if ( RealCounter < 999 )
+	        	{
+	        		counter = (int) RealCounter;
+	        		
+	        	
+	        	CNIC_Numbers_Strings[counter] = CNIC_Field.getText().toString();
+	        
+	        	
+	        		CNIC_Numbers[counter].setText(CNIC_Numbers_Strings[counter]);
+	        		myLinearLayout.addView(CNIC_Numbers[counter]);
+	        		
+	        	
+	        		
+	        		++counter;
+	        		
+	        		++RealCounter;
+	        		
+	        		
+	        	}
+	        	
+	        	
+	    	
+	    	
+			
+	        }
+	     });
+		
+		myLinearLayout.addView(textMessage);
+		myLinearLayout.addView(CNIC_Field);
+		myLinearLayout.addView(addCNIC);
 	
+		
+		if (RealCounter > 0 )
+		{
+			for ( int i=0 ; i <  RealCounter ; ++i)
+		{
+				CNIC_Numbers[i].setText(CNIC_Numbers_Strings[i]);
+        		myLinearLayout.addView(CNIC_Numbers[i]);
+			}
+		}
+		
+		
+		
+		
+		setContentView(scrollView);
+		
+			
+	}	
+	
+	
+	
+	public void SaveArray () {   
+	   	
+
+	
+		SharedPreferences settings = getSharedPreferences("SETTINGS KEY", 0);
+		SharedPreferences.Editor editor = settings.edit();
+		
+		JSONArray jArray = new JSONArray(Arrays.asList(CNIC_Numbers_Strings));	
+		editor.putString("jArray", jArray.toString());
+	
+		editor.commit();
+		
+	
+	    
+	}
+
+	public void LoadArray()
+	{
+		
+		
+		SharedPreferences settings = getSharedPreferences("SETTINGS KEY", 0);
+		try {
+		    
+			JSONArray jArray = new JSONArray(settings.getString("jArray", ""));
+			
+		    
+		    
+			List<String> list = new ArrayList<String>();
+			for (int i=0; i<jArray.length(); i++) {
+			    list.add( jArray.getString(i) );
+			}
+				CNIC_Numbers_Strings= list.toArray(new String[list.size()]);
+				
+			
+		} catch (JSONException e) {
+		    e.printStackTrace();
+		}
+		
+	
+		
+	}
+	
+	
+	public void SaveInt()
+	{
+	      SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
+	      SharedPreferences.Editor editor = settings.edit();
+	      editor.putFloat("value", RealCounter);
+
+	      // Commit the edits!
+	      editor.commit();
+	}
+	
+	public void LoadInt()
+	{
+	       SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
+	       RealCounter = settings.getFloat("value", RealCounter);
+	}
+	
+	
+
+
+	@Override
+	protected void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		
+		SaveArray();
+		SaveInt();
+		
+	}
+
+
+
+	@Override
+	protected void onStart() {
+		// TODO Auto-generated method stub
+		super.onStart();
+		
+		LoadArray();
+		LoadInt();
+		
+	}
+
+
+
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		
+		LoadArray();
+		LoadInt();
+		
+		
+	}
+
+
+
+	@Override
+	protected void onStop() {
+		// TODO Auto-generated method stub
+		super.onStop();
+		
+		SaveArray();
+		SaveInt();
+		
+		
+	}
+	
+	
+	
+	
+	
+	
+	
+
 }

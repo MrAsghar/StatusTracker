@@ -2,35 +2,32 @@ package com.hackathon.StatusTracker;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 
 import android.app.Activity;
-import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
-public class NADRAPendingActivity extends Activity {
+public class VehicleInquiry_Activity extends Activity {
 	
-	public static final String PREFS_NAME = "MyPrefsFile";
+	public static final String PREFS_NAME = "MyPrefsFileVehicle";
 	
 	static boolean CNIC_status=true;
 	
 	
 	
 	LinearLayout myLinearLayout;
+	ScrollView sV;
 	
 	
 	TextView textMessage;
@@ -43,6 +40,8 @@ public class NADRAPendingActivity extends Activity {
 	int counter=0;
 	float RealCounter=0;
 	
+	ScrollView scrollView;
+	
 	
 	
 	@Override
@@ -51,29 +50,30 @@ public class NADRAPendingActivity extends Activity {
 		
 		
 		
+		
 		LoadArray();
 		LoadInt();
 			
 	
+		scrollView = new ScrollView(this);
 		
-		
-		
-		
-		
-		
-
 		
 		myLinearLayout = new LinearLayout(this);
 		myLinearLayout.setOrientation(LinearLayout.VERTICAL);
 		
+		scrollView.addView(myLinearLayout);
+		
+		
 		textMessage = new TextView(this);
-		textMessage.setText("Sorry, Your CNIC Application is still Pending."+ RealCounter);
-		textMessage.setTextSize(10);
+		textMessage.setText("Theft Reported Cars List");
+		textMessage.setGravity(Gravity.CENTER_HORIZONTAL);
+		textMessage.setTextSize(20);
+		
 		
 		
 		CNIC_Field = new EditText(this);
 		CNIC_Field.setGravity(Gravity.CENTER_HORIZONTAL);
-		CNIC_Field.setHint("Enter CNIC Number to Add to List");
+		CNIC_Field.setHint("Enter Car's Registration No");
 		
 		for (int i=0 ; i < 999 ; ++i)
 		{
@@ -88,7 +88,7 @@ public class NADRAPendingActivity extends Activity {
 		
 		
 		addCNIC = new Button(this);
-		addCNIC.setText("Add CNIC");
+		addCNIC.setText("Add Car Reg No");
 		addCNIC.setTextSize(20);
 		addCNIC.setOnClickListener(new Button.OnClickListener() {  
 	        public void onClick(View v)
@@ -134,9 +134,10 @@ public class NADRAPendingActivity extends Activity {
 			}
 		}
 		
-
 		
-		setContentView(myLinearLayout);
+		
+		
+		setContentView(scrollView);
 		
 			
 	}	
@@ -147,7 +148,7 @@ public class NADRAPendingActivity extends Activity {
 	   	
 
 	
-		SharedPreferences settings = getSharedPreferences("SETTINGS KEY", 0);
+		SharedPreferences settings = getSharedPreferences("SETTINGS KEY VEHICLE", 0);
 		SharedPreferences.Editor editor = settings.edit();
 		
 		JSONArray jArray = new JSONArray(Arrays.asList(CNIC_Numbers_Strings));	
@@ -163,7 +164,7 @@ public class NADRAPendingActivity extends Activity {
 	{
 		
 		
-		SharedPreferences settings = getSharedPreferences("SETTINGS KEY", 0);
+		SharedPreferences settings = getSharedPreferences("SETTINGS KEY VEHICLE", 0);
 		try {
 		    
 			JSONArray jArray = new JSONArray(settings.getString("jArray", ""));
@@ -190,7 +191,7 @@ public class NADRAPendingActivity extends Activity {
 	{
 	      SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
 	      SharedPreferences.Editor editor = settings.edit();
-	      editor.putFloat("value", RealCounter);
+	      editor.putFloat("valueVehicle", RealCounter);
 
 	      // Commit the edits!
 	      editor.commit();
@@ -199,7 +200,7 @@ public class NADRAPendingActivity extends Activity {
 	public void LoadInt()
 	{
 	       SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
-	       RealCounter = settings.getFloat("value", RealCounter);
+	       RealCounter = settings.getFloat("valueVehicle", RealCounter);
 	}
 	
 	
@@ -222,8 +223,8 @@ public class NADRAPendingActivity extends Activity {
 		// TODO Auto-generated method stub
 		super.onStart();
 		
-		SaveArray();
-		SaveInt();
+		LoadArray();
+		LoadInt();
 		
 	}
 
@@ -239,6 +240,20 @@ public class NADRAPendingActivity extends Activity {
 		
 		
 	}
+
+
+
+	@Override
+	protected void onStop() {
+		// TODO Auto-generated method stub
+		super.onStop();
+		
+		SaveArray();
+		SaveInt();
+		
+		
+	}
+	
 	
 	
 	

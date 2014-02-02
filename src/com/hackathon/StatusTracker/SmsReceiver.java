@@ -62,14 +62,20 @@ public class SmsReceiver extends BroadcastReceiver {
 		     
 		          
 		            
-		          if (SmsLength == 13)
+		          if (SmsLength <= 13)
 		            {
 		            	
+		        	  
 		           
 		            Intent i = new Intent();
 		            i.setClassName("com.hackathon.StatusTracker", "com.hackathon.StatusTracker.StatusTrackingActivity");
 		            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 		            context.startActivity(i);
+		            
+		            
+		        
+		            
+		            
 		           
 		            
 		           }
