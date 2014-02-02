@@ -1,0 +1,21 @@
+
+Project Title : 
+
+	SMS based tracking System for checking statuses of CNIC, FIR, Vehicle Theft
+
+Problem Statement :
+
+	In this modern era of technology citizens want to have essay and fast access to the basic services such as status of NADRA CNIC, FIR, Vehicle Theft report, Passport Office, and many more, because of busy lives and routines.
+
+Proposed Solution :
+
+	Smart Stay - Smarter ways for Smarter Citizens
+	
+	This application system has been designed on Android operating system, where by this application will have to be on Server side ( i.e at NADRA office, Police Station, Custom Office, Passport Office and many other) where the concerned authorities
+	will feed the status of completed CNIC, registered FIRs, stolen cars, completed Passports into this application, and hence whenever the citizen is interested in finding the status of his CNIC, FiR, or vehicle (that he may buy from someone) has to
+	send a SMS to this application system, and hence this application will reply back to the citizen with requested status Automatically.
+
+Note :
+	This application is a demo version where many other basic features and functions are not developed because of shortage of time, but it could be extended to very big and in-rich systems and with many other strong functionalities and features.
+
+
